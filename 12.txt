@@ -1,0 +1,39 @@
+#!/user/bin/env python3
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+from threading import Timer
+import itchat
+import requests
+# 抓取金山毒霸每日一句，英文和翻译
+def get_news():
+  url = "http://open.iciba.com/dsapi/"
+  r = requests.get(url)
+  contents = r.json()['content']
+  translation = r.json()['translation']
+  return contents, translation
+def send_news():
+  try:
+    # 把抓取的数据传参
+    contents = get_news()
+    # 登陆微信账户，扫码登陆
+    itchat.auto_login(hotReload=True)
+    # 查找你微信号上想要发送人的名称
+    my_friend = itchat.search_friends(name=u'龙楚文')
+    LCW = my_friend[0]["UserName"]
+    # 获取金山字典的内容
+    massage1 = str(get_news()[0])
+    content = str(get_news()[0][17:])
+    massage2 = str(content)
+    massage3 = "123test"
+    # 发送消息
+    itchat.send(massage1, toUserName=LCW)
+    itchat.send(massage2, toUserName=LCW)
+    itchat.send(massage3, toUserName=LCW)
+    # 一天循环发送一次
+    t = Timer(300, send_news)
+    t.start()
+  except:
+    LCW = itchat.search_friends(name=u'龙楚文')
+    itchat.send(u"今天消息发送失败了", toUserName=LCW)
+if __name__ == '__main__':
+  send_news()
