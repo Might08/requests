@@ -1,0 +1,14 @@
+#!/user/bin/env python3
+# -*- coding: utf-8 -*-
+from pprint import pprint
+from random import randint
+import requests
+tel_num = '13' + str(randint(100000000,999999999))
+data = {
+            "uid" : "11115",
+         "appkey" : "ce6098c05b397d9093bd853ec1d06120",
+          "phone" : tel_num
+    }
+resp = requests.post("http://phone.ylapi.cn/phone_addr/address.u",data=data)
+pprint(resp.json())
+pprint(tel_num)
